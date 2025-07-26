@@ -1,0 +1,12 @@
+---
+test1:
+  goingfrom: New Delhi
+  goingto: New York
+  date: July 29th
+  stops: 1 Stop
+test2:
+  goingfrom: Bengaluru
+  goingto: Montreal
+  date: August 1st
+  stops: 2 Stop
+...
