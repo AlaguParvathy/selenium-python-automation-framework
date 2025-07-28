@@ -17,8 +17,8 @@ class Testsearchflights(softest.TestCase):
         self.yatra_launch_page_object = LaunchPage(self.driver)
         self.ut = Utils()
 
-    # @data(("New Delhi","New York","July 29th","1 Stop"),("Bengaluru","Montreal","August 1st","2 Stop")) #these parameters are called data decorators
-    # @unpack
+    @data(("New Delhi","New York","Jul 29","Non stop")) #these parameters are called data decorators
+    @unpack
     #to read data from an external json file
     #no needed for unpack here
     #@file_data("../testdata/testdata.json")
@@ -29,8 +29,8 @@ class Testsearchflights(softest.TestCase):
     #@data(*Utils.read_data_from_excel("D:\\Python_Selenium\\TestFrameworkDemo\\testdata\\testdata.xlsx", "sample_data"))
     #@unpack
     #to read data from csv file
-    @data(*Utils.read_data_from_csv("D:\\Python_Selenium\\TestFrameworkDemo\\testdata\\testdata.csv"))
-    @unpack
+    # @data(*Utils.read_data_from_csv("D:\\Python_Selenium\\TestFrameworkDemo\\testdata\\testdata.csv"))
+    # @unpack
     def test_search_flights_1_stop(self, goingfrom, goingto, departuredate, stops):
         #launching browser and opening the travel website
         #consolidated method to search flights with all actions in one method
