@@ -17,7 +17,7 @@ class Testsearchflights(softest.TestCase):
         self.yatra_launch_page_object = LaunchPage(self.driver)
         self.ut = Utils()
 
-    @data(("New Delhi","New York","Jul 29","Non stop")) #these parameters are called data decorators
+    @data(("Chennai","New Delhi","Jul 29","Non stop")) #these parameters are called data decorators
     @unpack
     #to read data from an external json file
     #no needed for unpack here

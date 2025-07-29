@@ -1,4 +1,6 @@
 import time
+
+from selenium.common import NoSuchElementException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from base.base_driver import BaseDriver
@@ -17,10 +19,10 @@ class LaunchPage(BaseDriver): #here Launch Page is the child of the BaseDriver c
     LOGIN_INFO = "//span[@class='commonModal__close']"
     DEPART_FROM_FIELD = "//input[@id='fromCity']"
     DEPART_FROM_FIELD_NEXT = "//input[@placeholder='From']"
-    DEPART_FROM_RESULT_LIST = "//li[contains(@id, 'react-autowhatever')"
+    DEPART_FROM_RESULT_LIST = "//li[contains(@id, 'react-autowhatever')]"
     GOING_TO_FIELD = "//label[@for='toCity']"
     GOING_TO_FIELD_NEXT = "//input[@placeholder='To']"
-    GOING_TO_RESULT_LIST = "//li[contains(@id, 'react-autowhatever"
+    GOING_TO_RESULT_LIST = "//li[contains(@id, 'react-autowhatever')]"
     SELECT_DATE_FIELD = "//p[@data-cy='departureDate']"
     ALL_DATES = "//div[contains(@class,'DayPicker-Day')]"
     SEARCH_BUTTON = "//a[@class='primaryBtn font24 latoBold widgetSearchBtn ']"
@@ -30,13 +32,13 @@ class LaunchPage(BaseDriver): #here Launch Page is the child of the BaseDriver c
         return self.wait_until_element_is_clickable(By.XPATH, self.LOGIN_INFO)
 
     def get_depart_from_field(self):
-        return self.driver.find_element(By.XPATH, self.DEPART_FROM_FIELD)
+        return self.wait_until_element_is_clickable(By.XPATH, self.DEPART_FROM_FIELD)
 
     def get_depart_from_field_next(self):
         return self.wait_until_element_is_clickable(By.XPATH, self.DEPART_FROM_FIELD_NEXT)
 
     def get_depart_from_result_field(self):
-        return self.wait_until_element_is_clickable(By.XPATH, self.DEPART_FROM_RESULT_LIST)
+        return self.wait_for_presence_of_all_elements(By.XPATH, self.DEPART_FROM_RESULT_LIST)
 
     def get_going_to_field(self):
         return self.wait_until_element_is_clickable(By.XPATH, self.GOING_TO_FIELD)
@@ -45,7 +47,7 @@ class LaunchPage(BaseDriver): #here Launch Page is the child of the BaseDriver c
         return self.wait_until_element_is_clickable(By.XPATH, self.GOING_TO_FIELD_NEXT)
 
     def get_going_to_result_field(self):
-        return self.wait_until_element_is_clickable(By.XPATH, self.GOING_TO_RESULT_LIST)
+        return self.wait_for_presence_of_all_elements(By.XPATH, self.GOING_TO_RESULT_LIST)
 
     def select_date_field(self):
         return self.wait_until_element_is_clickable(By.XPATH, self.SELECT_DATE_FIELD)
@@ -59,36 +61,41 @@ class LaunchPage(BaseDriver): #here Launch Page is the child of the BaseDriver c
     #actual methods to perform the operations
     def enter_depart_from_location(self, depart_location):
         self.get_login_info_pop_up().click()
-        self.get_depart_from_field_next().click()
+        time.sleep(1)
+        self.get_depart_from_field().click()
+        time.sleep(1)
         self.log.info("clicked on depart from")
-        time.sleep(2)
         self.get_depart_from_field_next().send_keys(depart_location)
         self.log.info("Typed text into depart from successfully")
+        time.sleep(2)
         search_results = self.get_depart_from_result_field()
-        print(len(search_results))
+        self.log.info(len(search_results))
         for results in search_results:
-            if depart_location in results.text:
-                time.sleep(4)
+            if depart_location.lower() in results.text.lower():
+                time.sleep(2)
                 results.click()
+                self.log.info("Clicked on depart from successfully")
                 break
 
     def enter_going_to_location(self, going_to_location):
         self.get_going_to_field().click()
         self.log.info("clicked on going")
-        time.sleep(2)
         self.get_going_to_field_next().send_keys(going_to_location)
         self.log.info("Typed text into going to field successfully")
+        time.sleep(2)
         search_results = self.get_going_to_result_field()
-        print(len(search_results))
+        self.log.info(len(search_results))
         for results in search_results:
             if going_to_location in results.text:
-                time.sleep(4)
+                time.sleep(2)
                 results.click()
+                self.log.info("Clicked on going to successfully")
                 break
 
     def enter_departure_date(self, depart_date):
         element = self.select_date_field()
         self.driver.execute_script("arguments[0].click();", element)
+        self.log.info("clicked on departure date")
         time.sleep(2)
         all_dates = self.get_all_dates().find_elements(By.XPATH, self.ALL_DATES)
         for sel_dates in all_dates:
@@ -97,10 +104,12 @@ class LaunchPage(BaseDriver): #here Launch Page is the child of the BaseDriver c
                 continue
             if depart_date in label:
                 sel_dates.click()
+                self.log.info("Clicked on departure date successfully")
                 break
 
     def click_search_flights_button(self):
         self.get_search_button().click()
+        self.log.info("Clicked on search button")
         time.sleep(3)
 
     def consolidated_search_flights(self,depart_location, going_to_location, depart_date):
