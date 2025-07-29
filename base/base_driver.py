@@ -1,9 +1,11 @@
 import time
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+from utilities.utils import Utils
 
 
 class BaseDriver:
+    log = Utils.custom_logger()
     def __init__(self, driver):
         self.driver = driver
 
@@ -18,6 +20,7 @@ class BaseDriver:
                 "window.scrollTo(0, document.body.scrollHeight);var pageLength=document.body.scrollHeight;return pageLength;")
             if lastCount == pageLength:
                 match = True
+        self.log.info("Page scroll complete")
         time.sleep(4)
 
     def wait_until_element_is_clickable(self, locator_type, locator):
@@ -25,5 +28,5 @@ class BaseDriver:
         return element
 
     def wait_for_presence_of_all_elements(self,locator_type, locator):
-        list_of_elements = self.wait_for_presence_of_all_elements(locator_type,locator)
+        list_of_elements = WebDriverWait(self.driver, 10).until(EC.presence_of_all_elements_located((locator_type,locator)))
         return list_of_elements

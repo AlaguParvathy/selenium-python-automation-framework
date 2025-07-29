@@ -13,6 +13,8 @@ from webdriver_manager.microsoft import EdgeChromiumDriverManager
 
 import pytest
 import time
+from selenium.webdriver.common.by import By
+driver = None
 
 @pytest.fixture(scope="class")
 #as we will be calling this fixture in another class we have to define the scope as "class"
@@ -45,6 +47,7 @@ def browser(request):
     return request.config.getoption("--browser")
 
 #fixture for url
+@pytest.fixture(scope="session", autouse=True)
 def url(request):
     return request.config.getoption("--url")
 
